@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
+from rest_framework import generics
 
 
 from .models import Warrior
@@ -42,12 +43,9 @@ class WarriorAPIView(APIView):
             return Response(status=400)
 
 
-class WarriorCreateAPIView(generics.CreateAPIView):
+class WarriorCreateAPIView(generics.ListCreateAPIView):
     serializer_class = WarriorSerializer
     queryset = Warrior.objects.all()
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
 
 
 class WarriorDestroyView(generics.DestroyAPIView):
