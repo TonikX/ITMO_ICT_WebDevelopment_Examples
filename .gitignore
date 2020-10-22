@@ -141,3 +141,4 @@ dataprocessing_frontend_vue/
 node_modules/
 templates/
 example_2310_django/.idea
+*/migrations
