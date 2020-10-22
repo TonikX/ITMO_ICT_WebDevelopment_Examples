@@ -36,7 +36,9 @@ class Skill(models.Model):
     """
     Описание умений
     """
+
     title = models.CharField(max_length=120, verbose_name='Наименование')
+
 
 class SkillOfWarrior(models.Model):
     """
