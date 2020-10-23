@@ -39,6 +39,9 @@ class Skill(models.Model):
 
     title = models.CharField(max_length=120, verbose_name='Наименование')
 
+    def __str__(self):
+        return self.title
+
 
 class SkillOfWarrior(models.Model):
     """
