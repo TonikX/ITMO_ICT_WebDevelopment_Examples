@@ -13,4 +13,8 @@ urlpatterns = [
     path('warriors/list/nested/', WarriorListNestedAPIView.as_view()),
 
     path('profession/create/', ProfessionCreateView.as_view())
+    path('warrior/create', WarriorCreateAPIView.as_view()),
+    path('warrior/detail/<int:pk>', WarriorDetailsView.as_view()),
+    path('warrior/delete/<int:pk>', WarriorDestroyView.as_view()),
+    path('warrior/update/<int:pk>', WarriorUpdateView.as_view()),
 ]
