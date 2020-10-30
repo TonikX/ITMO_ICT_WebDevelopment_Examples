@@ -2,6 +2,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from django.http import Http404
+from django.shortcuts import render
+from .forms import AddWarrior
 
 
 from .models import Warrior
@@ -16,11 +19,21 @@ class WarriorAPIView(APIView):
         serializer = WarriorSerializer(warriors, many=True)
         return Response({"Warriors": serializer.data})
 
+# в файл serializer.py
+# from rest_framework import serializers
+# from .models import Warrior
+#
+#
+# class WarriorSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = Warrior
+#         fields = "__all__"
 
     def post(self, request):
         serializer = WarriorSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            article_saved = serializer.save()
+            serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -62,4 +75,28 @@ class WarriorDetailsView(generics.RetrieveAPIView):
     queryset = Warrior.objects.all()
     serializer_class = WarriorSerializer
 
+# from rest_framework import generics
+# Код для юрлов
+# path('warrior/create', WarriorCreateAPIView.as_view()),
+# path('warrior/detail/<int:pk>', WarriorDetailsView.as_view()),
+# path('warrior/delete/<int:pk>', WarriorDestroyView.as_view()),
+# path('warrior/update/<int:pk>', WarriorUpdateView.as_view()),
 
+
+def get_warrior_data(request, id):  # отдельная страничка владельца функционально
+    try:
+        warrior = Warrior.objects.get(id=id)
+    except Warrior.DoesNotExist:
+        raise Http404("owner does not exist")
+    return render(request, 'warrior.html', {'warrior': warrior})
+
+
+def add_warrior(request):  # ввод владельца функционально
+    context = {}
+
+    form = AddWarrior(request.POST or None)
+
+    if form.is_valid():
+        form.save()
+    context['form'] = form
+    return render(request, 'add_warrior.html', context)
