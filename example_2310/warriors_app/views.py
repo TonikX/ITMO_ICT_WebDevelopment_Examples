@@ -7,10 +7,10 @@ from django.shortcuts import render
 from .forms import AddWarrior
 
 
-from .models import Warrior
+from .models import *
 
 
-from .serializer import WarriorSerializer
+from .serializers import *
 
 
 class WarriorAPIView(APIView):
@@ -29,6 +29,40 @@ class WarriorAPIView(APIView):
 #     class Meta:
 #         model = Warrior
 #         fields = "__all__"
+
+class ProfessionCreateView(APIView):
+
+	def post(self, request):
+		print("REQUEST DATA", request.data)
+		profession = request.data.get("profession")
+		print("PROF DATA", profession)
+
+		serializer = ProfessionCreateSerializer(data=profession)
+
+		if serializer.is_valid(raise_exception=True):
+			profession_saved = serializer.save()
+
+		return Response({"Success": "Profession '{}' created succesfully.".format(profession_saved.title)})
+
+
+class WarriorListAPIView(generics.ListAPIView):
+	queryset = Warrior.objects.all()
+	serializer_class = WarriorSerializer
+
+
+class WarriorListRelatedAPIView(generics.ListAPIView):
+	queryset = Warrior.objects.all()
+	serializer_class = WarriorRelatedSerializer
+
+
+class WarriorListDepthAPIView(generics.ListAPIView):
+	queryset = Warrior.objects.all()
+	serializer_class = WarriorDepthSerializer
+
+
+class WarriorListNestedAPIView(generics.ListAPIView):
+	queryset = Warrior.objects.all()
+	serializer_class = WarriorNestedSerializer
 
     def post(self, request):
         serializer = WarriorSerializer(data=request.data)
@@ -100,3 +134,4 @@ def add_warrior(request):  # ввод владельца функциональ�
         form.save()
     context['form'] = form
     return render(request, 'add_warrior.html', context)
+
