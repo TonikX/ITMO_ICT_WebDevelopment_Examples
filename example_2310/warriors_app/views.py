@@ -61,8 +61,8 @@ class WarriorListDepthAPIView(generics.ListAPIView):
 
 
 class WarriorListNestedAPIView(generics.ListAPIView):
-	queryset = Warrior.objects.all()
-	serializer_class = WarriorNestedSerializer
+    queryset = Warrior.objects.all()
+    serializer_class = WarriorNestedSerializer
 
     def post(self, request):
         serializer = WarriorSerializer(data=request.data)

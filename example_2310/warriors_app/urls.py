@@ -21,7 +21,7 @@ urlpatterns = [
     path('warriors/list/depth/', WarriorListDepthAPIView.as_view()),
     path('warriors/list/nested/', WarriorListNestedAPIView.as_view()),
 
-    path('profession/create/', ProfessionCreateView.as_view())
+    path('profession/create/', ProfessionCreateView.as_view()),
     path('warrior/create', WarriorCreateAPIView.as_view()),
     path('warrior/detail/<int:pk>', WarriorDetailsView.as_view()),
     path('warrior/delete/<int:pk>', WarriorDestroyView.as_view()),
