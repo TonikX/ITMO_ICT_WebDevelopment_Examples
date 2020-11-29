@@ -1,0 +1,11 @@
+site_name: Описание сервиса "Войны"
+nav:
+  - Home: index.md
+  - Professions:
+      - "mining engineering": professions/mining_engineering.md
+      - "picking herbs": professions/picking_herbs.md
+  - Skills:
+      - "Scary Coaster": skills/scary.md
+      - "Drop of Doom": skills/drop.md
+theme:
+  name: material

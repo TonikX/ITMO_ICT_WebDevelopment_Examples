@@ -13,11 +13,34 @@ from .models import *
 from .serializers import *
 
 
+class SkillAPIView(APIView):
+
+    def get(self, request):
+        skills = Skill.objects.all()
+        serializer = SkillSerializer(skills, many=True)
+        return Response({"Skills": serializer.data})
+
+
+
+class SkillCreateView(APIView):
+
+    def post(self, request):
+        skill = request.data.get("skill")
+        serializer = SkillCreateSerializer(data=skill)
+
+        if serializer.is_valid(raise_exception=True):
+            skill_saved = serializer.save()
+
+        return Response({"Success": "Skill '{}' created".format(skill_saved.title)})
+
+
 class WarriorAPIView(APIView):
     def get(self, request):
         warriors = Warrior.objects.all()
         serializer = WarriorSerializer(warriors, many=True)
         return Response({"Warriors": serializer.data})
+
+
 
 # в файл serializer.py
 # from rest_framework import serializers
@@ -30,34 +53,35 @@ class WarriorAPIView(APIView):
 #         model = Warrior
 #         fields = "__all__"
 
+
 class ProfessionCreateView(APIView):
 
-	def post(self, request):
-		print("REQUEST DATA", request.data)
-		profession = request.data.get("profession")
-		print("PROF DATA", profession)
+    def post(self, request):
+        print("REQUEST DATA", request.data)
+        profession = request.data.get("profession")
+        print("PROF DATA", profession)
 
-		serializer = ProfessionCreateSerializer(data=profession)
+        serializer = ProfessionCreateSerializer(data=profession)
 
-		if serializer.is_valid(raise_exception=True):
-			profession_saved = serializer.save()
+        if serializer.is_valid(raise_exception=True):
+            profession_saved = serializer.save()
 
-		return Response({"Success": "Profession '{}' created succesfully.".format(profession_saved.title)})
+        return Response({"Success": "Profession '{}' created succesfully.".format(profession_saved.title)})
 
 
 class WarriorListAPIView(generics.ListAPIView):
-	queryset = Warrior.objects.all()
-	serializer_class = WarriorSerializer
+    queryset = Warrior.objects.all()
+    serializer_class = WarriorSerializer
 
 
 class WarriorListRelatedAPIView(generics.ListAPIView):
-	queryset = Warrior.objects.all()
-	serializer_class = WarriorRelatedSerializer
+    queryset = Warrior.objects.all()
+    serializer_class = WarriorRelatedSerializer
 
 
 class WarriorListDepthAPIView(generics.ListAPIView):
-	queryset = Warrior.objects.all()
-	serializer_class = WarriorDepthSerializer
+    queryset = Warrior.objects.all()
+    serializer_class = WarriorDepthSerializer
 
 
 class WarriorListNestedAPIView(generics.ListAPIView):
@@ -134,4 +158,9 @@ def add_warrior(request):  # ввод владельца функциональ�
         form.save()
     context['form'] = form
     return render(request, 'add_warrior.html', context)
+
+
+class ProfessionCreateAPIView(generics.CreateAPIView):
+    serializer_class = ProfessionCreateSerializer
+    queryset = Profession.objects.all()
 

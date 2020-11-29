@@ -59,3 +59,19 @@ class WarriorNestedSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Warrior
 		fields = "__all__"
+
+
+class SkillSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Skill
+		fields = "__all__"
+
+
+class SkillCreateSerializer(serializers.Serializer):
+	title = serializers.CharField(max_length=120)
+
+	def create(self, validated_data):
+		skill = Skill(**validated_data)
+		skill.save()
+		return Skill(**validated_data)
