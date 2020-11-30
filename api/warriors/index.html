@@ -14,7 +14,7 @@
     
     
       
-        <title>Drop of Doom - Описание сервиса "Войны"</title>
+        <title>api/warriors[GET] - Описание сервиса "Войны"</title>
       
     
     
@@ -56,6 +56,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -82,7 +87,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Drop of Doom
+              api/warriors[GET]
             
           </span>
         </div>
@@ -222,28 +227,16 @@
     
     <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
     <label class="md-nav__link" for="nav-3">
-      Skills
+      Api
       <span class="md-nav__icon md-icon"></span>
     </label>
-    <nav class="md-nav" aria-label="Skills" data-md-level="1">
+    <nav class="md-nav" aria-label="Api" data-md-level="1">
       <label class="md-nav__title" for="nav-3">
         <span class="md-nav__icon md-icon"></span>
-        Skills
+        Api
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../scary/" class="md-nav__link">
-      Scary Coaster
-    </a>
-  </li>
-
         
           
           
@@ -256,10 +249,41 @@
     
     <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        api/warriors[GET]
+        <span class="md-nav__icon md-icon"></span>
+      </label>
     
     <a href="./" class="md-nav__link md-nav__link--active">
-      Drop of Doom
+      api/warriors[GET]
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#success-responses" class="md-nav__link">
+    Success Responses
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -276,15 +300,73 @@
               </div>
             
             
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#success-responses" class="md-nav__link">
+    Success Responses
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content">
             <article class="md-content__inner md-typeset">
               
                 
                 
-                  <h1>Drop of Doom</h1>
-                
-                
+                <h1 id="_1">Показать всех войнов</h1>
+<p>Выводит информацию обо всех войнах</p>
+<p><strong>URL</strong> : <code>/api/warriors/</code></p>
+<p><strong>Method</strong> : <code>GET</code></p>
+<p><strong>Auth required</strong> : YES</p>
+<p><strong>Permissions required</strong> : None</p>
+<p><strong>Data constraints</strong> : <code>{}</code></p>
+<h2 id="success-responses">Success Responses</h2>
+<p><strong>Code</strong> : <code>200 OK</code></p>
+<p><strong>Content</strong> : <code>{[]}</code></p>
+<pre><code class="language-json">{
+    &quot;Warriors&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;race&quot;: &quot;t&quot;,
+            &quot;name&quot;: &quot;Petr2&quot;,
+            &quot;level&quot;: 0,
+            &quot;profession&quot;: null,
+            &quot;skill&quot;: []
+        },
+        {
+            &quot;id&quot;: 2,
+            &quot;race&quot;: &quot;t&quot;,
+            &quot;name&quot;: &quot;Petr&quot;,
+            &quot;level&quot;: 0,
+            &quot;profession&quot;: null,
+            &quot;skill&quot;: []
+        }
+    ]
+}
+</code></pre>
                 
               
               
@@ -303,7 +385,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../scary/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../../professions/picking_herbs/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -312,7 +394,7 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Scary Coaster
+                picking herbs
               </div>
             </div>
           </a>
