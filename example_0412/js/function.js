@@ -15,7 +15,8 @@ var b = new (() => {});
 const getFirst = array => array[0];
 // стрелочные функции не имеют собственного контекста выполнения
 
-const test = {
+//
+const simpleClassJS = {
   name: 'test object',
   createAnonFunction: function() {
     return function() {
@@ -32,13 +33,13 @@ const test = {
   }
 };
 
-const anon = test.createAnonFunction('hello', 'world');
-const arrow = test.createArrowFunction('hello', 'world');
+const anon = simpleClassJS.createAnonFunction('hello', 'world');
+const arrow = simpleClassJS.createArrowFunction('hello', 'world');
 
 anon();
 //undefined
 //{}
 
 arrow();
-test object
-{ '0': 'hello', '1': 'world' }
+// test object
+// { '0': 'hello', '1': 'world' }
