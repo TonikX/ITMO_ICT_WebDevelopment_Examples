@@ -1,16 +1,151 @@
+from django.db import transaction
+from django.http import Http404
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django_filters import rest_framework as filters
+from rest_framework import filters as standart_filters
+from rest_framework import generics, viewsets
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
-from rest_framework import generics
-from django.http import Http404
-from django.shortcuts import render
+
 from .forms import AddWarrior
-
-
-from .models import *
-
-
 from .serializers import *
+
+
+class GoodsListViewWithApiView(APIView):
+    # Переписываем метод get
+
+    def get(self, request):
+        goods = Goods.objects.all()[:10]
+        goods_list = GoodsSerializer(goods, many=True)
+        return Response(goods_list.data)
+
+    def post(self, request):
+        serializer = GoodsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductFilter(filters.FilterSet):
+    min_price = filters.NumberFilter(field_name="price", lookup_expr='gte')
+    max_price = filters.NumberFilter(field_name="price", lookup_expr='lte')
+
+    class Meta:
+        model = Goods
+        fields = ['category', 'min_price', 'max_price']
+
+
+# class StandardResultsSetPagination(PageNumberPagination):
+#     page_size = 3
+#     page_size_query_param = 'page_size' # GoodsListView/?p=2&page_size=3
+#     page_query_param = 'page' # GoodsListView/?p=2
+#     max_page_size = 100
+
+
+class CustomPagination(PageNumberPagination):
+    page_size = 4
+    page_size_query_param = 'page_size'  # GoodsListView/?p=2&page_size=3
+    page_query_param = 'p'  # GoodsListView/?p=2
+    max_page_size = 100
+
+    def get_paginated_response(self, data):
+        return Response({
+            'links': {
+                'next': self.get_next_link(),
+                'previous': self.get_previous_link()
+            },
+            'message': 'it`s ok',
+            'count': self.page.paginator.count,
+            'results': data
+        })
+
+
+class GoodsListGenericView(generics.ListCreateAPIView):
+    """
+         Список продуктов
+    """
+    queryset = Goods.objects.all()
+    # Сериализация
+    serializer_class = GoodsSerializer
+    # Пагинация
+    pagination_class = CustomPagination
+
+    # Фильтр / сортировка, поиск
+    # filter_backends = [standart_filters.SearchFilter, standart_filters.OrderingFilter, filters.DjangoFilterBackend]
+    # ordering_fields = ['created']
+    # search_fields = ['name', 'category']
+    # filterset_class = ProductFilter
+
+
+class GoodsCreateGenericView(generics.CreateAPIView):
+    """
+         Список продуктов
+    """
+    queryset = Goods.objects.all()
+    serializer_class = GoodsSerializer
+
+
+class GoodsImageCreateGenericView(generics.CreateAPIView):
+    """
+    Сериалайзер для загрузки изображений товаров
+    """
+    queryset = Goods.objects.all()
+    serializer_class = GoodImagesManyCreateSerializer
+
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     instance_serializer = GoodsSerializer(Goods.objects.get(id=request.data['goods']))
+    #     return Response(instance_serializer.data)
+
+    def post(self, request):
+        serializer = GoodImagesManyCreateSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            new_serializer = GoodsSerializer(Goods.objects.get(id=request.data['goods']))
+            return Response(new_serializer.data)
+        return Response({'success': "False"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GoodsOneImageCreateGenericView(generics.CreateAPIView):
+    """
+    Сериалайзер для загрузки изображений товаров
+    """
+    queryset = GoodsImage.objects.all()
+    serializer_class = GoodImagesSerializer
+
+
+class GoodsListViewSetView(viewsets.ModelViewSet):
+    """
+         Список продуктов
+    """
+    queryset = Goods.objects.all()
+    # Сериализация
+    serializer_class = GoodsSerializer
+    # Пагинация
+    # pagination_class = StandardResultsSetPagination
+    # Фильтр / сортировка, поиск
+    filter_backends = [standart_filters.SearchFilter, standart_filters.OrderingFilter, filters.DjangoFilterBackend]
+    ordering_fields = ['created']
+    search_fields = ['name', 'category']
+    filterset_class = ProductFilter
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        print('ddddd')
+        return Response(serializer.data)
 
 
 class SkillAPIView(APIView):
@@ -21,10 +156,16 @@ class SkillAPIView(APIView):
         return Response({"Skills": serializer.data})
 
 
-
 class SkillCreateView(APIView):
+    '''
+    Example:
+        {
+            "skill": {"title": "dddd"}
+        }
+    '''
 
     def post(self, request):
+        global skill_saved
         skill = request.data.get("skill")
         serializer = SkillCreateSerializer(data=skill)
 
@@ -39,19 +180,6 @@ class WarriorAPIView(APIView):
         warriors = Warrior.objects.all()
         serializer = WarriorSerializer(warriors, many=True)
         return Response({"Warriors": serializer.data})
-
-
-
-# в файл serializer.py
-# from rest_framework import serializers
-# from .models import Warrior
-#
-#
-# class WarriorSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = Warrior
-#         fields = "__all__"
 
 
 class ProfessionCreateView(APIView):
@@ -95,7 +223,6 @@ class WarriorListNestedAPIView(generics.ListAPIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     def put(self, request, pk):
         warrior = get_object_or_404(Warrior, pk=pk)
         serializer = WarriorSerializer(warrior, data=request.data)
@@ -103,7 +230,6 @@ class WarriorListNestedAPIView(generics.ListAPIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     def delete(self, request, pk):
         warrior = get_object_or_404(Warrior, pk=pk)
@@ -133,13 +259,6 @@ class WarriorDetailsView(generics.RetrieveAPIView):
     queryset = Warrior.objects.all()
     serializer_class = WarriorSerializer
 
-# from rest_framework import generics
-# Код для юрлов
-# path('warrior/create', WarriorCreateAPIView.as_view()),
-# path('warrior/detail/<int:pk>', WarriorDetailsView.as_view()),
-# path('warrior/delete/<int:pk>', WarriorDestroyView.as_view()),
-# path('warrior/update/<int:pk>', WarriorUpdateView.as_view()),
-
 
 def get_warrior_data(request, id):  # отдельная страничка владельца функционально
     try:
@@ -164,3 +283,51 @@ class ProfessionCreateAPIView(generics.CreateAPIView):
     serializer_class = ProfessionCreateSerializer
     queryset = Profession.objects.all()
 
+
+# @transaction.atomic
+# @api_view(['POST'])
+# def create_prof_and_connect_to_warrior(request):
+#     """
+#     Эндпоинт на создания профессии и привязки его к воину
+#     принимает следюущий словарь на вход:
+#     {
+#     "prof_name":"имя профессии",
+#     "prof_description":"Описание профессии",
+#     "warrior_id":2
+#     }
+#     """
+#     data = request.data
+#     # Создание новой профессии
+#     new_prof = Profession.objects.create(title=data["prof_name"],
+#                                          description=data["prof_description"])
+#     # Создание война
+#     warrior = Warrior.objects.get(id=data["warrior_id"])
+#
+#     # Привязка профессии к воину
+#     warrior.profession = new_prof
+#     warrior.save()
+#
+#     return Response(status=201, data={"message": "objects created"})
+
+
+@api_view(['POST'])
+def create_prof_and_connect_to_warrior(request):
+    """
+    Эндпоинт на создания профессии и привязки его к воину
+    принимает следюущий словарь на вход:
+    {
+    "prof_name":"имя профессии",
+    "prof_description":"Описание профессии",
+    "warrior_id":2
+    }
+    """
+    data = request.data
+    # Поиск война
+    warrior = Warrior.objects.filter(id=data["warrior_id"])
+    if warrior.exists():
+        # Создание новой профессии
+        new_prof = Profession.objects.create(title=data["prof_name"], description=data["prof_description"])
+        warrior[0].profession = new_prof
+        warrior[0].save()
+        return Response(status=201, data={"message": "objects created"})
+    return Response(status=404, data={"message": "Warrior not found"})

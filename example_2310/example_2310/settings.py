@@ -11,11 +11,15 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+import environ
 
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+env = environ.Env()
+environ.Env.read_env()
 
 
 # Quick-start development settings - unsuitable for production
@@ -43,6 +47,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'warriors_app',
     'djoser',
+    'django_extensions',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -80,12 +86,13 @@ WSGI_APPLICATION = 'example_2310.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db2.sqlite3',
+#     }
+# }
+DATABASES = {'default': env.db('DATABASE_URL')}
 
 
 # Password validation
@@ -110,11 +117,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 2
 }
-
-
-
-
 
 LANGUAGE_CODE = 'en-us'
 
@@ -133,3 +138,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'warriors_app.User'
+
+default_app_config = 'warriors_app.apps.WarriorsAppConfig'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

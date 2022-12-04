@@ -4,8 +4,8 @@ nav:
   - Professions:
       - "mining engineering": professions/mining_engineering.md
       - "picking herbs": professions/picking_herbs.md
-  - Skills:
-      - "Scary Coaster": skills/scary.md
-      - "Drop of Doom": skills/drop.md
+  - Api:
+      - "api/warriors[GET]": api/warriors.md
+
 theme:
   name: material
