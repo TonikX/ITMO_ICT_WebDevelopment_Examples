@@ -6,7 +6,7 @@ from .models import Goods, Log
 @receiver(post_save, sender=Goods)
 def after_create_good(sender, instance, created, **kwargs):
     """
-    Сигнал, вызываемый ПОСЛЕ сохранения объекта
+    Сигнал, вызываемый ПОСЛЕ создания объекта
 
     :param sender: Объект модели данных, на отслежтивание действий над которым настроен триггер
     :param instance: Экземпляр объекта во время срабатывания триггера
@@ -33,8 +33,8 @@ def before_update_good(sender, instance, **kwargs):
         message=f"Сигнал, вызываемый до изменения данных о товаре"
     )
     old_instance = Goods.objects.get(id=instance.id)
-    print('Старое имя товара: ', old_instance.name)
-    print('Новое имя товара: ', instance.name)
+    print('Old имя товара: ', old_instance.name)
+    print('New имя товара: ', instance.name)
 
 
 @receiver(pre_delete, sender=Goods)

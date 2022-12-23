@@ -13,6 +13,6 @@ def validate_file_extension(value):
                         "reg", ".docm", ".dotm", ".xlsm", ".xltm", ".xlam", ".pptm", ".potm", ".ppam", ".ppsm", ".sldm"]
     if ext.lower() in valid_extensions:
         raise ValidationError('Unsupported file extension.')
-    MAX_FILE_SIZE = 1
+    MAX_FILE_SIZE = 1000000
     if value.size > MAX_FILE_SIZE:
         raise ValidationError("File size too big!")
