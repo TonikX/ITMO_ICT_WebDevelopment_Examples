@@ -42,7 +42,8 @@ class GoodImagesManyCreateSerializer(serializers.Serializer):
         # validated_data - объект хранящий данные после прохождения сериализация
         for file in files:
             # Для каждого сериализованного файла создается запись в таблице GoodsImage с внешним ключем на goods
-            file = GoodsImage.objects.create(file=file, goods=validated_data.get('goods'), image_key='dd')
+            file = GoodsImage.objects.create(
+                file=file, goods=validated_data.get('goods'), image_key='dd')
             file.save()
         return goods  # Юзеру возвращается товар с его файлами
 
@@ -58,7 +59,7 @@ class GoodsSerializer(serializers.ModelSerializer):
 class WarriorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Warrior
-        fields = ['id', 'race', 'name']
+        fields = ['id', 'race', 'name', 'damage']
 
 
 class ProfessionCreateSerializer(serializers.Serializer):

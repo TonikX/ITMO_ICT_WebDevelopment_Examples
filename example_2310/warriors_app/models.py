@@ -15,7 +15,8 @@ class Goods(models.Model):
                                    auto_now_add=True, editable=True)
     price = models.IntegerField(verbose_name='Цена'
                                              '', default=0, blank=True, null=True)
-    new_price = models.IntegerField(verbose_name='Новая цена', default=0, blank=True, null=True)
+    new_price = models.IntegerField(
+        verbose_name='Новая цена', default=0, blank=True, null=True)
 
     def __str__(self):
         return self.name + ' / ' + str(self.created)
@@ -64,13 +65,15 @@ class Warrior(models.Model):
         ('d', 'developer'),
         ('t', 'teamlead'),
     )
-    race = models.CharField(max_length=1, choices=race_types, verbose_name='Расса')
+    race = models.CharField(
+        max_length=1, choices=race_types, verbose_name='Расса')
     name = models.CharField(max_length=120, verbose_name='Имя')
     level = models.IntegerField(verbose_name='Уровень', default=0)
     skill = models.ManyToManyField('Skill', verbose_name='Умения', through='SkillOfWarrior',
                                    related_name='warrior_skils', blank=True),
     profession = models.ForeignKey('Profession', on_delete=models.CASCADE, verbose_name='Профессия',
                                    blank=True, null=True)
+    damage = models.IntegerField(verbose_name='Урон', default=0)
 
     def __str__(self):
         return self.name + ' / ' + str(self.id)
@@ -110,8 +113,10 @@ class SkillOfWarrior(models.Model):
     Описание умений война
     """
 
-    skill = models.ForeignKey('Skill', verbose_name='Умение', on_delete=models.CASCADE)
-    warrior = models.ForeignKey('Warrior', verbose_name='Воин', on_delete=models.CASCADE)
+    skill = models.ForeignKey(
+        'Skill', verbose_name='Умение', on_delete=models.CASCADE)
+    warrior = models.ForeignKey(
+        'Warrior', verbose_name='Воин', on_delete=models.CASCADE)
     level = models.IntegerField(verbose_name='Уровень освоения умения')
 
 
@@ -120,11 +125,10 @@ class Log(models.Model):
     Лог
     """
 
-    message = models.CharField(max_length=2048, verbose_name='Описание события')
+    message = models.CharField(
+        max_length=2048, verbose_name='Описание события')
     created = models.DateTimeField(verbose_name='Дата события',
                                    auto_now_add=True, editable=True)
 
     def __str__(self):
         return str(self.created)
-
-
