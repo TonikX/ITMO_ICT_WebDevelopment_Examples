@@ -139,6 +139,6 @@ __pycache__/
 .env
 dataprocessing_frontend_vue/
 node_modules/
-templates/
+#plates/
 example_2310_django/.idea
 */migrations
